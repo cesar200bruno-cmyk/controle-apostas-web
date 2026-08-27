@@ -45,6 +45,10 @@ button { cursor: pointer; }
 #cenarios .return-value { font-size: 18px; }
 #cenarios .profit-line { font-size: 11px !important; }
 #cenarios .profit-line strong { font-size: 12px; }
+
+.external-shortcut { display: inline-flex; align-items: center; gap: 5px; color: var(--petrol); font: 700 10px 'IBM Plex Mono', monospace; letter-spacing: .06em; text-decoration: none; text-transform: uppercase; transition: color .16s ease, transform .16s ease; }
+.external-shortcut:hover { color: #287d18; transform: translateY(-1px); }
+@media (max-width: 700px) { .topbar-meta { flex-wrap: wrap; white-space: normal; justify-content: flex-end; gap: 6px; } .external-shortcut { padding: 4px 0; } }
 #cenarios .scenario-result > span:last-child { font-size: 11px !important; }
 #cenarios .scenario-foot { font-size: 11px; }
 @media (max-width: 700px) {

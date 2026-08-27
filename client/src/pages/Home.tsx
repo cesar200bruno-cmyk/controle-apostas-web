@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   ArrowUpRight,
+  ExternalLink,
   BarChart3,
   Calculator,
   Check,
@@ -169,7 +170,7 @@ export default function Home() {
       <main className="main-content">
         <header className="topbar">
           <div><p className="eyebrow">Controle / Visão geral</p><h1>Enxergue a conta antes do placar.</h1></div>
-          <div className="topbar-meta"><span className="status-dot" /> dados locais <span className="divider" /> atualizado agora</div>
+          <div className="topbar-meta"><span className="status-dot" /> dados locais <span className="divider" /> atualizado agora <span className="divider" /> <a href="https://www.bet365.com" target="_blank" rel="noopener noreferrer" className="external-shortcut" aria-label="Abrir o site da Bet365 em uma nova aba" title="Abrir Bet365"><ExternalLink size={14} /> bet365</a></div>
         </header>
 
         <section className="hero-strip" id="visao-geral">
