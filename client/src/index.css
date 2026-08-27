@@ -103,3 +103,8 @@ button { cursor: pointer; }
 .kpi-card.worst .neutral-value { color: var(--petrol); }
 @media (max-width: 1000px) and (min-width: 701px) { .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 700px) { .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+@keyframes bet365-pulse { 0% { opacity: 0; transform: scale(.98); } 30% { opacity: .72; } 72%, 100% { opacity: 0; transform: scale(1.08); } }
+.bet365-button { position: relative; isolation: isolate; }
+.bet365-button::after { content: ''; position: absolute; inset: -5px; border: 2px solid rgba(184,227,75,.58); border-radius: 10px; pointer-events: none; z-index: -1; animation: bet365-pulse 2.4s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) { .bet365-button::after { animation: none; opacity: 0; } }
