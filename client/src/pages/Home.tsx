@@ -16,6 +16,7 @@ import {
   Plus,
   RotateCcw,
   Trash2,
+  TrendingDown,
   TrendingUp,
   WalletCards,
 } from "lucide-react";
@@ -84,6 +85,7 @@ export default function Home() {
 
   const totalInvested = bets.reduce((sum, bet) => sum + bet.stake, 0);
   const bestProfit = eventSummaries.reduce((sum, item) => sum + item.best, 0);
+  const worstProfit = eventSummaries.length ? eventSummaries.reduce((sum, item) => sum + Math.min(...item.scenarios.map((scenario: { profit: number }) => scenario.profit)), 0) : 0;
   const averageOdd = bets.length ? bets.reduce((sum, bet) => sum + bet.odd, 0) / bets.length : 0;
   const profitChartData = useMemo(() => eventSummaries.flatMap((summary) => summary.scenarios.map((scenario) => ({ id: scenario.id, selection: scenario.selection, event: summary.event, profit: scenario.profit }))), [eventSummaries]);
   const chartMax = Math.max(...profitChartData.map((item) => Math.abs(item.profit)), 1);
@@ -178,6 +180,7 @@ export default function Home() {
         <section className="kpi-grid" aria-label="Indicadores principais">
           <article className="kpi-card"><div className="kpi-label"><WalletCards size={16} /> total investido</div><strong>{formatMoney(totalInvested)}</strong><span>em {eventSummaries.length} {eventSummaries.length === 1 ? "evento" : "eventos"}</span></article>
           <article className="kpi-card accent"><div className="kpi-label"><TrendingUp size={16} /> melhor cenário</div><strong className="green-text">{formatMoney(bestProfit)}</strong><span>lucro potencial combinado</span></article>
+          <article className="kpi-card worst"><div className="kpi-label"><TrendingDown size={16} /> pior cenário</div><strong className={worstProfit < 0 ? "negative" : "neutral-value"}>{formatMoney(worstProfit)}</strong><span>menor lucro possível combinado</span></article>
           <article className="kpi-card"><div className="kpi-label"><CircleDollarSign size={16} /> odd média</div><strong>{number.format(averageOdd)}</strong><span>entre {bets.length} seleções</span></article>
           <article className="kpi-card"><div className="kpi-label"><ArrowUpRight size={16} /> seleções</div><strong>{bets.length}</strong><span>lançamentos acompanhados</span></article>
         </section>
