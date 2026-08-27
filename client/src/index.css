@@ -108,3 +108,26 @@ button { cursor: pointer; }
 .bet365-button { position: relative; isolation: isolate; }
 .bet365-button::after { content: ''; position: absolute; inset: -5px; border: 2px solid rgba(184,227,75,.58); border-radius: 10px; pointer-events: none; z-index: -1; animation: bet365-pulse 2.4s ease-out infinite; }
 @media (prefers-reduced-motion: reduce) { .bet365-button::after { animation: none; opacity: 0; } }
+
+/* Cartões de cenários: leitura editorial com resultados em blocos independentes. */
+#cenarios .scenario-card { position: relative; overflow: hidden; border: 1px solid #d8e1dc; border-radius: 12px; background: #fffefa; box-shadow: 0 10px 24px rgba(23,50,77,.06); transition: transform .18s ease, box-shadow .18s ease; }
+#cenarios .scenario-card::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 4px; background: linear-gradient(180deg, var(--lime), #7eaf34); pointer-events: none; }
+#cenarios .scenario-card:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(23,50,77,.1); }
+#cenarios .scenario-head { padding: 16px 18px 14px; background: linear-gradient(135deg, #f8fbf6, #fffefa); border-bottom: 1px solid #e2e8e2; }
+#cenarios .scenario-event { display: flex; align-items: center; gap: 12px; min-width: 0; }
+#cenarios .scenario-event-copy { display: grid; gap: 3px; min-width: 0; }
+#cenarios .scenario-label { color: #8a999b; font: 9px 'IBM Plex Mono', monospace; letter-spacing: .12em; text-transform: uppercase; }
+#cenarios .scenario-event strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#cenarios .invested-pill { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border: 1px solid #dcebb7; border-radius: 999px; background: #eef7d5; color: #557729; }
+#cenarios .scenario-options { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 10px; background: #f4f6f1; }
+#cenarios .scenario-option { min-width: 0; margin: 0; padding: 16px; border: 1px solid #e0e7df; border-radius: 10px; background: #fff; box-shadow: 0 4px 14px rgba(23,50,77,.045); }
+#cenarios .scenario-option:last-child { border-right: 1px solid #e0e7df; }
+#cenarios .scenario-choice { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+#cenarios .choice-badge { display: grid; place-items: center; flex: 0 0 auto; width: 29px; height: 29px; border-radius: 8px; background: #e5f6af; color: #557729; font: 700 17px 'Space Grotesk', sans-serif; }
+#cenarios .draw-option .choice-badge { background: #edf0f0; color: #62747a; }
+#cenarios .scenario-choice > div { display: grid; gap: 3px; min-width: 0; }
+#cenarios .scenario-choice > div > span:not(.scenario-label) { margin-top: 2px; line-height: 1.3; }
+#cenarios .scenario-result { min-width: 118px; padding-left: 12px; border-left: 1px dashed #d9e0da; }
+#cenarios .return-value { font-size: 20px; }
+#cenarios .scenario-foot { border-top: 0; padding: 11px 16px 12px; background: #fffefa; }
+@media (max-width: 700px) { #cenarios .scenario-options { grid-template-columns: 1fr; } #cenarios .scenario-option { border-right: 1px solid #e0e7df; } #cenarios .scenario-result { margin-top: 12px; padding: 10px 0 0; border-top: 1px dashed #d9e0da; border-left: 0; text-align: left; } #cenarios .scenario-head { gap: 10px; } #cenarios .invested-pill { align-self: flex-start; } }
