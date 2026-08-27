@@ -1,0 +1,26 @@
+{
+  "name": "Controle de Apostas",
+  "short_name": "Controle",
+  "description": "Controle de apostas com cálculos automáticos de retorno, lucro e ROI.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f1ea",
+  "theme_color": "#17324d",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/manus-storage/controle-pwa-192_29ada928.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/manus-storage/controle-pwa-512_c3b4f359.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
