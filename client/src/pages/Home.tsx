@@ -174,7 +174,7 @@ export default function Home() {
 
         <section className="hero-strip" id="visao-geral">
           <div><span className="section-kicker">Resumo da operação</span><h2>Uma leitura rápida do seu mercado.</h2><p>Organize cada seleção, compare cenários e acompanhe o que está em jogo sem esconder nenhuma conta.</p></div>
-          <div className="hero-art"><img src="/assets/controle-site-cover.webp" alt="Ilustração editorial de uma ficha de jogo" /><div className="artifact-overlay"><span>ODD</span><b>2.10</b><span>RETORNO</span><b>R$ 52,50</b><i /></div></div>
+          <div className="hero-art"><img src="/assets/controle-site-cover-v2.webp" alt="Ilustração editorial de uma ficha de jogo" /><div className="artifact-overlay"><span>ODD</span><b>2.10</b><span>RETORNO</span><b>R$ 52,50</b><i /></div></div>
         </section>
 
         <section className="kpi-grid" aria-label="Indicadores principais">
