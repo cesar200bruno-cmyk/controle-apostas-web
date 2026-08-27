@@ -11,13 +11,13 @@
   "lang": "pt-BR",
   "icons": [
     {
-      "src": "/manus-storage/controle-pwa-192_29ada928.png",
+      "src": "/assets/controle-pwa-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/manus-storage/controle-pwa-512_c3b4f359.png",
+      "src": "/assets/controle-pwa-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
