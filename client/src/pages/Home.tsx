@@ -192,7 +192,7 @@ export default function Home() {
             <div className="scenario-list">
               {eventSummaries.map((summary) => (
                 <article className="scenario-card" key={summary.event}>
-                  <div className="scenario-head"><div><span className="event-index"><i />0{eventSummaries.indexOf(summary) + 1}</span><strong>{summary.event}</strong></div><span className="invested">investido {formatMoney(summary.total)}</span></div>
+                  <div className="scenario-head"><div><span className="event-index"><i />0{eventSummaries.indexOf(summary) + 1}</span><strong>{summary.event}</strong></div><span className="invested invested-amount"><WalletCards size={16} /><span>investido <strong>{formatMoney(summary.total)}</strong></span></span></div>
                   <div className="scenario-options">
                     {summary.scenarios.map((scenario: Bet & { returnValue: number; profit: number; roi: number }) => (
                       <div className="scenario-option" key={scenario.id}>
