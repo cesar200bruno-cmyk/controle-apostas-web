@@ -46,9 +46,11 @@ button { cursor: pointer; }
 #cenarios .profit-line { font-size: 11px !important; }
 #cenarios .profit-line strong { font-size: 12px; }
 
-.external-shortcut { display: inline-flex; align-items: center; gap: 5px; color: var(--petrol); font: 700 10px 'IBM Plex Mono', monospace; letter-spacing: .06em; text-decoration: none; text-transform: uppercase; transition: color .16s ease, transform .16s ease; }
-.external-shortcut:hover { color: #287d18; transform: translateY(-1px); }
-@media (max-width: 700px) { .topbar-meta { flex-wrap: wrap; white-space: normal; justify-content: flex-end; gap: 6px; } .external-shortcut { padding: 4px 0; } }
+.bet365-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 0 14px; border: 1px solid rgba(23,50,77,.18); border-radius: 7px; background: var(--lime); color: var(--petrol); box-shadow: 0 5px 0 rgba(23,50,77,.13); font: 700 11px 'IBM Plex Mono', monospace; letter-spacing: .06em; text-decoration: none; text-transform: uppercase; transition: transform .16s ease, box-shadow .16s ease, background .16s ease; }
+.bet365-button:hover { background: #c9ee68; transform: translateY(-2px); box-shadow: 0 7px 0 rgba(23,50,77,.13); }
+.bet365-button:active { transform: translateY(1px); box-shadow: 0 2px 0 rgba(23,50,77,.13); }
+.bet365-button:focus-visible { outline: 3px solid rgba(184,227,75,.7); outline-offset: 3px; }
+@media (max-width: 700px) { .topbar-meta { flex-wrap: wrap; white-space: normal; justify-content: flex-start; gap: 7px; } .bet365-button { min-height: 44px; padding: 0 15px; font-size: 11px; } }
 #cenarios .scenario-result > span:last-child { font-size: 11px !important; }
 #cenarios .scenario-foot { font-size: 11px; }
 @media (max-width: 700px) {

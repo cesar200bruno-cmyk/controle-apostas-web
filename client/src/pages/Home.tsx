@@ -170,7 +170,7 @@ export default function Home() {
       <main className="main-content">
         <header className="topbar">
           <div><p className="eyebrow">Controle / Visão geral</p><h1>Enxergue a conta antes do placar.</h1></div>
-          <div className="topbar-meta"><span className="status-dot" /> dados locais <span className="divider" /> atualizado agora <span className="divider" /> <a href="https://www.bet365.com" target="_blank" rel="noopener noreferrer" className="external-shortcut" aria-label="Abrir o site da Bet365 em uma nova aba" title="Abrir Bet365"><ExternalLink size={14} /> bet365</a></div>
+          <div className="topbar-meta"><span className="status-dot" /> dados locais <span className="divider" /> atualizado agora <span className="divider" /> <a href="https://www.bet365.com" target="_blank" rel="noopener noreferrer" className="bet365-button" aria-label="Abrir o site da Bet365 em uma nova aba" title="Abrir Bet365"><ExternalLink size={18} strokeWidth={2.4} /><span>ABRIR BET365</span><ArrowUpRight size={15} strokeWidth={2.4} /></a></div>
         </header>
 
         <section className="hero-strip" id="visao-geral">
