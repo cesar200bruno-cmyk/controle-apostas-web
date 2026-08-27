@@ -192,11 +192,11 @@ export default function Home() {
             <div className="scenario-list">
               {eventSummaries.map((summary) => (
                 <article className="scenario-card" key={summary.event}>
-                  <div className="scenario-head"><div className="scenario-event"><span className="event-index"><i />0{eventSummaries.indexOf(summary) + 1}</span><div className="scenario-event-copy"><span className="scenario-label">evento</span><strong>{summary.event}</strong></div></div><span className="invested invested-pill"><WalletCards size={13} /> {formatMoney(summary.total)} investido</span></div>
+                  <div className="scenario-head"><div><span className="event-index"><i />0{eventSummaries.indexOf(summary) + 1}</span><strong>{summary.event}</strong></div><span className="invested">investido {formatMoney(summary.total)}</span></div>
                   <div className="scenario-options">
                     {summary.scenarios.map((scenario: Bet & { returnValue: number; profit: number; roi: number }) => (
-                      <div className={`scenario-option ${scenario.selection === "Empate" ? "draw-option" : "team-option"}`} key={scenario.id}>
-                        <div className="scenario-choice"><span className="choice-badge" aria-hidden="true">{scenario.selection === "Empate" ? "=" : "•"}</span><div><span className="scenario-label">resultado</span><strong>{scenario.selection}</strong><span>{scenario.market} · odd {number.format(scenario.odd)}</span></div></div>
+                      <div className="scenario-option" key={scenario.id}>
+                        <div><strong>{scenario.selection}</strong><span>{scenario.market} · odd {number.format(scenario.odd)}</span></div>
                         <div className="scenario-result"><span className="result-label">retorno total</span><b className="return-value">{formatMoney(scenario.returnValue)}</b><span className="profit-line">lucro líquido <strong className={scenario.profit >= 0 ? "positive" : "negative"}>{scenario.profit >= 0 ? "+" : ""}{formatMoney(scenario.profit)}</strong></span><span className="scenario-equation">{formatMoney(scenario.returnValue)} − {formatMoney(summary.total)} = {formatMoney(scenario.profit)}</span><span>ROI {number.format(scenario.roi * 100)}%</span></div>
                       </div>
                     ))}
