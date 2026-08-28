@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 
 // Quadro de Operação: uma única superfície de controle, com navegação por âncoras.
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path="/" component={Home} />

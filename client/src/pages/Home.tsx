@@ -48,18 +48,26 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
+function parseStoredBets(value: string | null): Bet[] | null {
+  if (!value) return null;
+  try {
+    const stored = JSON.parse(value);
+    if (!Array.isArray(stored)) return null;
+    return stored.map((bet, index) => ({
+      ...bet,
+      groupId: Number.isFinite(bet?.groupId) ? bet.groupId : Math.floor(index / 2) + 1,
+    }));
+  } catch {
+    return null;
+  }
+}
+
 export default function Home() {
-  const [bets, setBets] = useState<Bet[]>(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("controle-apostas-bets") ?? "null");
-      if (!Array.isArray(stored)) return initialBets;
-      return stored.map((bet, index) => ({
-        ...bet,
-        groupId: Number.isFinite(bet?.groupId) ? bet.groupId : Math.floor(index / 2) + 1,
-      }));
-    } catch { return initialBets; }
-  });
+  const [bets, setBets] = useState<Bet[]>(() => parseStoredBets(localStorage.getItem("controle-apostas-bets")) ?? initialBets);
+  const [manualBalance, setManualBalance] = useState(() => localStorage.getItem("controle-apostas-manual-balance") ?? "");
+
   useEffect(() => { localStorage.setItem("controle-apostas-bets", JSON.stringify(bets)); }, [bets]);
+  useEffect(() => { localStorage.setItem("controle-apostas-manual-balance", manualBalance); }, [manualBalance]);
   const [newDay, setNewDay] = useState("Sexta");
   const [newTime, setNewTime] = useState("20:30");
   const [newMarket, setNewMarket] = useState("Resultado do jogo");
@@ -67,8 +75,6 @@ export default function Home() {
   const [newTeamOdd, setNewTeamOdd] = useState("2.00");
   const [newDrawOdd, setNewDrawOdd] = useState("3.10");
   const [newStake, setNewStake] = useState("25.00");
-  const [manualBalance, setManualBalance] = useState(() => localStorage.getItem("controle-apostas-manual-balance") ?? "");
-  useEffect(() => { localStorage.setItem("controle-apostas-manual-balance", manualBalance); }, [manualBalance]);
 
   const eventSummaries = useMemo(() => calculateEventSummaries(bets), [bets]);
 
@@ -171,7 +177,7 @@ export default function Home() {
 
         <section className="hero-strip" id="visao-geral">
           <div><span className="section-kicker">Resumo da operação</span><h2>Uma leitura rápida do seu mercado.</h2><p>Organize cada seleção, compare cenários e acompanhe o que está em jogo sem esconder nenhuma conta.</p></div>
-          <div className="hero-art"><img src="/assets/controle-site-cover-v2.webp" alt="Ilustração editorial de uma ficha de jogo" /></div>
+          <div className="hero-art"><img src="/manus-storage/controle-site-cover-v2_5a7b578d.png" alt="Ilustração editorial de uma ficha de jogo" /></div>
         </section>
 
         <section className="kpi-grid" aria-label="Indicadores principais">
@@ -184,7 +190,7 @@ export default function Home() {
 
         <div className="content-grid">
           <section className="panel" id="cenarios">
-            <div className="panel-heading"><div><span className="section-kicker">Leitura por evento</span><span className="market-line" /><h2>Cenários de retorno</h2><p className="section-explainer">Cada lançamento fica separado: retorno da aposta menos o total investido neste bloco.</p></div><span className="tiny-tag">automático</span></div>
+            <div className="panel-heading"><div><span className="section-kicker">Leitura por evento</span><span className="market-line" /><h2>Cenários de retorno</h2>                <p className="section-explainer">Cada lançamento fica separado: retorno da aposta menos o total investido neste bloco.</p></div><span className="tiny-tag">automático</span></div>
             <div className="scenario-list">
               {eventSummaries.map((summary, summaryIndex) => (
                 <article className="scenario-card" key={summary.groupId}>
