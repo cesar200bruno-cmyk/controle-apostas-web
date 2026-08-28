@@ -129,3 +129,22 @@ button { cursor: pointer; }
 #cenarios .scenario-delete:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
 @media (max-width: 700px) { #cenarios .scenario-delete { width: 40px; height: 40px; margin-left: auto; } }
 @media (prefers-reduced-motion: reduce) { #cenarios .scenario-delete { transition: none; } #cenarios .scenario-delete:hover { transform: none; } }
+
+/* Saldo manual: referência visual independente, sem participação nos cálculos. */
+.side-column { display: grid; align-content: start; gap: 20px; }
+.manual-balance-panel { background: #fffdf9; border-color: #d9dedb; }
+.manual-balance-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.manual-balance-panel h2 { color: var(--petrol); font-size: 22px; margin-top: 7px; }
+.manual-tag { border: 1px solid #c8d8a1; background: var(--lime-soft); color: #5d7628; font: 9px 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; padding: 5px 7px; white-space: nowrap; }
+.manual-balance-intro { color: #73818a; font-size: 12px; line-height: 1.55; margin: 13px 0 18px; }
+.manual-balance-field { display: grid; gap: 7px; }
+.manual-balance-field > span { color: #76858c; font: 10px 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
+.manual-balance-input { display: flex; align-items: center; border: 1px solid #cfd9d5; background: #f6f8f1; color: var(--petrol); transition: border-color .16s ease, box-shadow .16s ease; }
+.manual-balance-input:focus-within { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(184,227,75,.2); }
+.manual-balance-input b { padding-left: 13px; font: 700 18px 'Space Grotesk', sans-serif; }
+.manual-balance-input input { min-width: 0; width: 100%; border: 0; outline: 0; background: transparent; color: var(--petrol); padding: 11px 13px 11px 7px; font: 700 22px 'Space Grotesk', sans-serif; letter-spacing: -.03em; }
+.manual-balance-input input::placeholder { color: #a2afb0; }
+.manual-balance-note { display: flex; align-items: flex-start; gap: 8px; color: #829097; border-top: 1px solid #e3e8e3; margin: 16px 0 0; padding-top: 12px; font-size: 10px; line-height: 1.45; }
+.manual-balance-note svg { flex: 0 0 auto; color: #78973a; margin-top: 1px; }
+@media (max-width: 1000px) { .side-column { gap: 14px; } }
+@media (max-width: 700px) { .side-column { gap: 14px; } .manual-balance-panel { padding: 17px 13px; } .manual-balance-input input { font-size: 20px; } }

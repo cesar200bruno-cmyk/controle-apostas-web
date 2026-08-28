@@ -67,6 +67,8 @@ export default function Home() {
   const [newTeamOdd, setNewTeamOdd] = useState("2.00");
   const [newDrawOdd, setNewDrawOdd] = useState("3.10");
   const [newStake, setNewStake] = useState("25.00");
+  const [manualBalance, setManualBalance] = useState(() => localStorage.getItem("controle-apostas-manual-balance") ?? "");
+  useEffect(() => { localStorage.setItem("controle-apostas-manual-balance", manualBalance); }, [manualBalance]);
 
   const eventSummaries = useMemo(() => calculateEventSummaries(bets), [bets]);
 
