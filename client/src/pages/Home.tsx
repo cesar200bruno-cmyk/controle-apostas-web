@@ -24,6 +24,7 @@ import {
 
 type Bet = {
   id: number;
+  groupId: number;
   event: string;
   market: string;
   selection: string;
@@ -34,10 +35,10 @@ type Bet = {
 const weekdays = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 
 const initialBets: Bet[] = [
-  { id: 1, event: "Sexta 20:30", market: "Resultado do jogo", selection: "Nautico", odd: 2, stake: 25 },
-  { id: 2, event: "Sexta 20:30", market: "Resultado do jogo", selection: "Empate", odd: 3.1, stake: 25 },
-  { id: 3, event: "Sexta 14:00", market: "Resultado do jogo", selection: "Racing Santander", odd: 2.1, stake: 25 },
-  { id: 4, event: "Sexta 14:00", market: "Resultado do jogo", selection: "Empate", odd: 3.5, stake: 25 },
+  { id: 1, groupId: 1, event: "Sexta 20:30", market: "Resultado do jogo", selection: "Nautico", odd: 2, stake: 25 },
+  { id: 2, groupId: 1, event: "Sexta 20:30", market: "Resultado do jogo", selection: "Empate", odd: 3.1, stake: 25 },
+  { id: 3, groupId: 2, event: "Sexta 14:00", market: "Resultado do jogo", selection: "Racing Santander", odd: 2.1, stake: 25 },
+  { id: 4, groupId: 2, event: "Sexta 14:00", market: "Resultado do jogo", selection: "Empate", odd: 3.5, stake: 25 },
 ];
 
 const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
@@ -58,7 +59,14 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 export default function Home() {
   const [bets, setBets] = useState<Bet[]>(() => {
-    try { return JSON.parse(localStorage.getItem("controle-apostas-bets") ?? "null") ?? initialBets; } catch { return initialBets; }
+    try {
+      const stored = JSON.parse(localStorage.getItem("controle-apostas-bets") ?? "null");
+      if (!Array.isArray(stored)) return initialBets;
+      return stored.map((bet, index) => ({
+        ...bet,
+        groupId: Number.isFinite(bet?.groupId) ? bet.groupId : Math.floor(index / 2) + 1,
+      }));
+    } catch { return initialBets; }
   });
   useEffect(() => { localStorage.setItem("controle-apostas-bets", JSON.stringify(bets)); }, [bets]);
   const [newDay, setNewDay] = useState("Sexta");
@@ -70,9 +78,10 @@ export default function Home() {
   const [newStake, setNewStake] = useState("25.00");
 
   const eventSummaries = useMemo(() => {
-    const grouped = new Map<string, Bet[]>();
-    bets.forEach((bet) => grouped.set(bet.event, [...(grouped.get(bet.event) ?? []), bet]));
-    return Array.from(grouped.entries()).map(([event, entries]: [string, Bet[]]) => {
+    const grouped = new Map<number, Bet[]>();
+    bets.forEach((bet) => grouped.set(bet.groupId, [...(grouped.get(bet.groupId) ?? []), bet]));
+    return Array.from(grouped.entries()).map(([groupId, entries]: [number, Bet[]]) => {
+      const event = entries[0]?.event ?? "Evento";
       const total = entries.reduce((sum, bet) => sum + bet.stake, 0);
       const scenarios = entries.map((bet: Bet) => ({
         ...bet,
@@ -80,7 +89,7 @@ export default function Home() {
         profit: bet.odd * bet.stake - total,
         roi: total ? (bet.odd * bet.stake - total) / total : 0,
       }));
-      return { event, entries, total, scenarios, best: Math.max(...scenarios.map((s: { profit: number }) => s.profit), 0) };
+      return { groupId, event, entries, total, scenarios, best: Math.max(...scenarios.map((s: { profit: number }) => s.profit), 0) };
     });
   }, [bets]);
 
@@ -126,13 +135,16 @@ export default function Home() {
       toast.error("Informe o nome do time antes de adicionar.");
       return;
     }
-    const nextId = Math.max(0, ...bets.map((bet) => bet.id)) + 1;
     const selectedEvent = event ?? `${newDay} ${newTime}`;
     const teamStake = Number(newStake.replace(",", ".")) || 0;
-    setBets((current) => [...current,
-      { id: nextId, event: selectedEvent, market: newMarket, selection: teamName, odd: Number(newTeamOdd.replace(",", ".")) || 0, stake: teamStake },
-      { id: nextId + 1, event: selectedEvent, market: newMarket, selection: "Empate", odd: Number(newDrawOdd.replace(",", ".")) || 0, stake: teamStake },
-    ]);
+    setBets((current) => {
+      const nextId = Math.max(0, ...current.map((bet) => bet.id)) + 1;
+      const nextGroupId = Math.max(0, ...current.map((bet) => bet.groupId)) + 1;
+      return [...current,
+        { id: nextId, groupId: nextGroupId, event: selectedEvent, market: newMarket, selection: teamName, odd: Number(newTeamOdd.replace(",", ".")) || 0, stake: teamStake },
+        { id: nextId + 1, groupId: nextGroupId, event: selectedEvent, market: newMarket, selection: "Empate", odd: Number(newDrawOdd.replace(",", ".")) || 0, stake: teamStake },
+      ];
+    });
     setNewTeamName("");
     toast.success("Time e empate adicionados; cálculos atualizados.");
   }
@@ -188,11 +200,11 @@ export default function Home() {
 
         <div className="content-grid">
           <section className="panel" id="cenarios">
-            <div className="panel-heading"><div><span className="section-kicker">Leitura por evento</span><span className="market-line" /><h2>Cenários de retorno</h2><p className="section-explainer">Cada resultado é calculado separadamente: retorno da aposta menos o total investido no evento.</p></div><span className="tiny-tag">automático</span></div>
+            <div className="panel-heading"><div><span className="section-kicker">Leitura por evento</span><span className="market-line" /><h2>Cenários de retorno</h2><p className="section-explainer">Cada lançamento fica separado: retorno da aposta menos o total investido neste bloco.</p></div><span className="tiny-tag">automático</span></div>
             <div className="scenario-list">
-              {eventSummaries.map((summary) => (
-                <article className="scenario-card" key={summary.event}>
-                  <div className="scenario-head"><div><span className="event-index"><i />0{eventSummaries.indexOf(summary) + 1}</span><strong>{summary.event}</strong></div><span className="invested invested-amount"><WalletCards size={16} /><span>investido <strong>{formatMoney(summary.total)}</strong></span></span></div>
+              {eventSummaries.map((summary, summaryIndex) => (
+                <article className="scenario-card" key={summary.groupId}>
+                  <div className="scenario-head"><div><span className="event-index"><i />0{summaryIndex + 1}</span><strong>{summary.event}</strong></div><span className="invested invested-amount"><WalletCards size={16} /><span>investido <strong>{formatMoney(summary.total)}</strong></span></span></div>
                   <div className="scenario-options">
                     {summary.scenarios.map((scenario: Bet & { returnValue: number; profit: number; roi: number }) => (
                       <div className="scenario-option" key={scenario.id}>
@@ -210,7 +222,7 @@ export default function Home() {
 
           <aside className="panel add-panel">
             <div className="panel-heading"><div><span className="section-kicker">Novo lançamento</span><h2>Adicionar seleção</h2></div><div className="plus-badge"><Plus size={17} /></div></div>
-            <p className="panel-intro">Informe o time e as odds. A opção Empate é adicionada automaticamente e permanece fixa. O lucro considera o valor total investido no evento.</p>
+            <p className="panel-intro">Informe o time e as odds. A opção Empate é adicionada automaticamente e permanece fixa. Cada novo lançamento cria um bloco independente de cálculo.</p>
             <div className="form-stack">
               <div className="form-row event-fields"><Field label="dia do evento"><select value={newDay} onChange={(e) => setNewDay(e.target.value)}>{weekdays.map((day) => <option key={day}>{day}</option>)}</select></Field><Field label="horário"><input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)} /></Field></div>
               <Field label="mercado"><input value={newMarket} onChange={(e) => setNewMarket(e.target.value)} placeholder="Resultado do jogo" /></Field>
@@ -230,9 +242,9 @@ export default function Home() {
           <div className="panel-heading"><div><span className="section-kicker">Base de dados</span><span className="market-line" /><h2>Lançamentos</h2></div><span className="tiny-tag">{bets.length} registros</span></div>
           <div className="table-wrap"><table><thead><tr><th>evento</th><th>mercado</th><th>seleção</th><th>odd</th><th>valor apostado</th><th>retorno</th><th>lucro potencial</th><th aria-label="ações" /></tr></thead><tbody>
             {bets.map((bet) => {
-              const eventTotal = bets.filter((item) => item.event === bet.event).reduce((sum, item) => sum + item.stake, 0);
+              const groupTotal = bets.filter((item) => item.groupId === bet.groupId).reduce((sum, item) => sum + item.stake, 0);
               const returnValue = bet.odd * bet.stake;
-              const profit = returnValue - eventTotal;
+              const profit = returnValue - groupTotal;
               return <tr key={bet.id}><td><input className="cell-input event-input" value={bet.event} onChange={(e) => updateBet(bet.id, "event", e.target.value)} /></td><td><input className="cell-input" value={bet.market} onChange={(e) => updateBet(bet.id, "market", e.target.value)} /></td><td>{bet.selection === "Empate" ? <span className="fixed-selection"><Check size={12} /> Empate fixo</span> : <input className="cell-input selection-input" value={bet.selection} onChange={(e) => updateBet(bet.id, "selection", e.target.value)} />}</td><td><input className="cell-input number-input" inputMode="decimal" value={bet.odd} onChange={(e) => updateBet(bet.id, "odd", e.target.value)} /></td><td><input className="cell-input money-input" inputMode="decimal" value={bet.stake} onChange={(e) => updateBet(bet.id, "stake", e.target.value)} /></td><td className="calculated">{formatMoney(returnValue)}</td><td className={profit >= 0 ? "calculated positive" : "calculated negative"}>{profit >= 0 ? "+" : ""}{formatMoney(profit)}</td><td><button className="icon-button danger" title="Remover lançamento" onClick={() => removeBet(bet.id)}><Trash2 size={16} /></button></td></tr>;
             })}
           </tbody></table></div>
