@@ -121,3 +121,11 @@ button { cursor: pointer; }
 @media (hover: hover) and (pointer: fine) { #cenarios .scenario-card:hover { transform: translateY(-3px); border-color: #b9d18a; box-shadow: 0 14px 28px rgba(23,50,77,.12); } }
 #cenarios .scenario-card:focus-within { border-color: #b9d18a; box-shadow: 0 10px 24px rgba(23,50,77,.1); }
 @media (prefers-reduced-motion: reduce) { #cenarios .scenario-card { transition: none; } #cenarios .scenario-card:hover { transform: none; } }
+
+/* Exclusão por bloco: remove time e empate juntos, sem confundir com a lixeira da tabela. */
+#cenarios .scenario-delete { display: inline-grid; place-items: center; flex: 0 0 auto; width: 36px; height: 36px; margin-left: 2px; border: 1px solid #ead5d1; border-radius: 8px; background: #fff9f7; color: #a7665b; transition: color .16s ease, background .16s ease, border-color .16s ease, transform .16s ease; }
+#cenarios .scenario-delete:hover { border-color: #d99a8c; background: #fff0ec; color: #a94537; transform: translateY(-1px); }
+#cenarios .scenario-delete:active { transform: scale(.96); }
+#cenarios .scenario-delete:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+@media (max-width: 700px) { #cenarios .scenario-delete { width: 40px; height: 40px; margin-left: auto; } }
+@media (prefers-reduced-motion: reduce) { #cenarios .scenario-delete { transition: none; } #cenarios .scenario-delete:hover { transform: none; } }

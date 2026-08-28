@@ -54,3 +54,7 @@ export function calculateEventSummaries(bets: Bet[]): EventSummary[] {
     };
   });
 }
+
+export function removeBetGroup(bets: Bet[], groupId: number): Bet[] {
+  return bets.filter((bet) => bet.groupId !== groupId);
+}

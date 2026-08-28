@@ -4,7 +4,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { calculateEventSummaries, type Bet } from "@/lib/betting";
+import { calculateEventSummaries, removeBetGroup, type Bet } from "@/lib/betting";
 import {
   ArrowUpRight,
   ExternalLink,
@@ -126,6 +126,11 @@ export default function Home() {
     toast.success("Time e empate adicionados; cálculos atualizados.");
   }
 
+  function removeBlock(groupId: number) {
+    setBets((current) => removeBetGroup(current, groupId));
+    toast.success("Bloco removido. Os outros lançamentos foram mantidos.");
+  }
+
   function removeBet(id: number) {
     setBets((current) => current.filter((bet) => bet.id !== id));
     toast.success("Lançamento removido.");
@@ -181,7 +186,7 @@ export default function Home() {
             <div className="scenario-list">
               {eventSummaries.map((summary, summaryIndex) => (
                 <article className="scenario-card" key={summary.groupId}>
-                  <div className="scenario-head"><div><span className="event-index"><i />0{summaryIndex + 1}</span><strong>{summary.event}</strong></div><span className="invested invested-amount"><WalletCards size={16} /><span>investido <strong>{formatMoney(summary.total)}</strong></span></span></div>
+                  <div className="scenario-head"><div><span className="event-index"><i />0{summaryIndex + 1}</span><strong>{summary.event}</strong></div><span className="invested invested-amount"><WalletCards size={16} /><span>investido <strong>{formatMoney(summary.total)}</strong></span></span><button type="button" className="scenario-delete" onClick={() => removeBlock(summary.groupId)} title={`Excluir bloco ${summary.event}`} aria-label={`Excluir bloco ${summary.event}`}><Trash2 size={16} /></button></div>
                   <div className="scenario-options">
                     {summary.scenarios.map((scenario: Bet & { returnValue: number; profit: number; roi: number }) => (
                       <div className="scenario-option" key={scenario.id}>
