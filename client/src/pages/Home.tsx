@@ -5,6 +5,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { calculateEventSummaries, removeBetGroup, type Bet } from "@/lib/betting";
+import { readLocalPanelState, writeLocalPanelState } from "@/lib/localState";
 import {
   ArrowUpRight,
   ExternalLink,
@@ -32,13 +33,6 @@ const initialBets: Bet[] = [
   { id: 4, groupId: 2, event: "Sexta 14:00", market: "Resultado do jogo", selection: "Empate", odd: 3.5, stake: 25 },
 ];
 
-const LOCAL_STATE_KEY = "controle-apostas-state-v2";
-
-type LocalPanelState = {
-  bets: Bet[];
-  manualBalance: string;
-};
-
 const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const number = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -55,50 +49,13 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function parseStoredBets(value: string | null): Bet[] | null {
-  if (!value) return null;
-  try {
-    const stored = JSON.parse(value);
-    if (!Array.isArray(stored)) return null;
-    return stored.map((bet, index) => ({
-      ...bet,
-      groupId: Number.isFinite(bet?.groupId) ? bet.groupId : Math.floor(index / 2) + 1,
-    }));
-  } catch {
-    return null;
-  }
-}
-
-function readLocalPanelState(): LocalPanelState {
-  try {
-    const combined = JSON.parse(localStorage.getItem(LOCAL_STATE_KEY) ?? "null");
-    if (combined && Array.isArray(combined.bets)) {
-      return {
-        bets: parseStoredBets(JSON.stringify(combined.bets)) ?? initialBets,
-        manualBalance: typeof combined.manualBalance === "string" ? combined.manualBalance : "",
-      };
-    }
-  } catch {
-    // Fall back to the legacy keys below.
-  }
-
-  return {
-    bets: parseStoredBets(localStorage.getItem("controle-apostas-bets")) ?? initialBets,
-    manualBalance: localStorage.getItem("controle-apostas-manual-balance") ?? "",
-  };
-}
-
 export default function Home() {
-  const [initialLocalState] = useState(readLocalPanelState);
+  const [initialLocalState] = useState(() => readLocalPanelState(localStorage, initialBets));
   const [bets, setBets] = useState<Bet[]>(initialLocalState.bets);
   const [manualBalance, setManualBalance] = useState(initialLocalState.manualBalance);
 
   useEffect(() => {
-    const state: LocalPanelState = { bets, manualBalance };
-    localStorage.setItem(LOCAL_STATE_KEY, JSON.stringify(state));
-    // Keep the legacy keys in sync so older installed versions can also recover the data.
-    localStorage.setItem("controle-apostas-bets", JSON.stringify(bets));
-    localStorage.setItem("controle-apostas-manual-balance", manualBalance);
+    writeLocalPanelState(localStorage, { bets, manualBalance });
   }, [bets, manualBalance]);
   const [newDay, setNewDay] = useState("Sexta");
   const [newTime, setNewTime] = useState("20:30");
