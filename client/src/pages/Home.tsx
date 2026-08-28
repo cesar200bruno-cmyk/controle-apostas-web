@@ -4,6 +4,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { calculateEventSummaries, type Bet } from "@/lib/betting";
 import {
   ArrowUpRight,
   ExternalLink,
@@ -21,16 +22,6 @@ import {
   TrendingUp,
   WalletCards,
 } from "lucide-react";
-
-type Bet = {
-  id: number;
-  groupId: number;
-  event: string;
-  market: string;
-  selection: string;
-  odd: number;
-  stake: number;
-};
 
 const weekdays = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 
@@ -77,21 +68,7 @@ export default function Home() {
   const [newDrawOdd, setNewDrawOdd] = useState("3.10");
   const [newStake, setNewStake] = useState("25.00");
 
-  const eventSummaries = useMemo(() => {
-    const grouped = new Map<number, Bet[]>();
-    bets.forEach((bet) => grouped.set(bet.groupId, [...(grouped.get(bet.groupId) ?? []), bet]));
-    return Array.from(grouped.entries()).map(([groupId, entries]: [number, Bet[]]) => {
-      const event = entries[0]?.event ?? "Evento";
-      const total = entries.reduce((sum, bet) => sum + bet.stake, 0);
-      const scenarios = entries.map((bet: Bet) => ({
-        ...bet,
-        returnValue: bet.odd * bet.stake,
-        profit: bet.odd * bet.stake - total,
-        roi: total ? (bet.odd * bet.stake - total) / total : 0,
-      }));
-      return { groupId, event, entries, total, scenarios, best: Math.max(...scenarios.map((s: { profit: number }) => s.profit), 0) };
-    });
-  }, [bets]);
+  const eventSummaries = useMemo(() => calculateEventSummaries(bets), [bets]);
 
   const totalInvested = bets.reduce((sum, bet) => sum + bet.stake, 0);
   const bestProfit = eventSummaries.reduce((sum, item) => sum + item.best, 0);
