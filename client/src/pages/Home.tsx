@@ -204,7 +204,8 @@ export default function Home() {
             </div>
           </section>
 
-          <aside className="panel add-panel">
+          <aside className="side-column">
+            <section className="panel add-panel">
             <div className="panel-heading"><div><span className="section-kicker">Novo lançamento</span><h2>Adicionar seleção</h2></div><div className="plus-badge"><Plus size={17} /></div></div>
             <p className="panel-intro">Informe o time e as odds. A opção Empate é adicionada automaticamente e permanece fixa. Cada novo lançamento cria um bloco independente de cálculo.</p>
             <div className="form-stack">
@@ -217,6 +218,14 @@ export default function Home() {
             </div>
             <div className="scenario-preview"><div className="preview-heading"><span className="section-kicker">Cenários independentes</span><span>prévia</span></div><div className="preview-grid"><div className="preview-scenario"><span>se {previewTeamName} vencer</span><b>{formatMoney(previewTeamReturn)}</b><small>lucro líquido <strong className={previewTeamProfit >= 0 ? "positive" : "negative"}>{previewTeamProfit >= 0 ? "+" : ""}{formatMoney(previewTeamProfit)}</strong></small></div><div className="preview-scenario"><span>se der empate</span><b>{formatMoney(previewDrawReturn)}</b><small>lucro líquido <strong className={previewDrawProfit >= 0 ? "positive" : "negative"}>{previewDrawProfit >= 0 ? "+" : ""}{formatMoney(previewDrawProfit)}</strong></small></div></div><p>Retorno total de cada cenário, descontado o investimento de {formatMoney(previewTotalInvested)}.</p></div>
             <div className="form-tip"><span className="tip-line" /> <span>Escolha qualquer dia e horário. O time e as duas odds são editáveis; “Empate” permanece fixo.</span></div>
+            </section>
+
+            <section className="panel manual-balance-panel" aria-labelledby="manual-balance-title">
+              <div className="manual-balance-heading"><div><span className="section-kicker">Referência pessoal</span><h2 id="manual-balance-title">Dinheiro disponível</h2></div><span className="manual-tag">não calcula</span></div>
+              <p className="manual-balance-intro">Informe manualmente quanto você tem para acompanhar ao lado das suas apostas.</p>
+              <label className="manual-balance-field" htmlFor="manual-balance-input"><span>saldo informado</span><div className="manual-balance-input"><b aria-hidden="true">R$</b><input id="manual-balance-input" inputMode="decimal" value={manualBalance} onChange={(event) => setManualBalance(event.target.value)} placeholder="0,00" /></div></label>
+              <p className="manual-balance-note"><Info size={14} /> Este valor é apenas informativo e não altera nenhum cálculo.</p>
+            </section>
           </aside>
         </div>
 
