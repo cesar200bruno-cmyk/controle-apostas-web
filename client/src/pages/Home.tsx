@@ -2,7 +2,7 @@
  * Direção visual: Quadro de Operação — dashboard editorial utilitário.
  * Este arquivo concentra a experiência de lançamento e os cálculos derivados.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { calculateEventSummaries, removeBetGroup, type Bet } from "@/lib/betting";
 import { readLocalPanelState, writeLocalPanelState } from "@/lib/localState";
@@ -50,13 +50,44 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export default function Home() {
-  const [initialLocalState] = useState(() => readLocalPanelState(localStorage, initialBets));
-  const [bets, setBets] = useState<Bet[]>(initialLocalState.bets);
-  const [manualBalance, setManualBalance] = useState(initialLocalState.manualBalance);
+  const [panelState, setPanelState] = useState(() => readLocalPanelState(localStorage, initialBets));
+  const bets = panelState.bets;
+  const manualBalance = panelState.manualBalance;
+  const panelStateRef = useRef(panelState);
+  panelStateRef.current = panelState;
+
+  const setBets = (nextBets: Bet[] | ((current: Bet[]) => Bet[])) => {
+    setPanelState((current) => {
+      const resolvedBets = typeof nextBets === "function" ? nextBets(current.bets) : nextBets;
+      const nextState = { ...current, bets: resolvedBets };
+      writeLocalPanelState(localStorage, nextState);
+      return nextState;
+    });
+  };
+
+  const setManualBalance = (nextBalance: string) => {
+    setPanelState((current) => {
+      const nextState = { ...current, manualBalance: nextBalance };
+      writeLocalPanelState(localStorage, nextState);
+      return nextState;
+    });
+  };
 
   useEffect(() => {
-    writeLocalPanelState(localStorage, { bets, manualBalance });
-  }, [bets, manualBalance]);
+    const flushState = () => writeLocalPanelState(localStorage, panelStateRef.current);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") flushState();
+    };
+
+    flushState();
+    window.addEventListener("pagehide", flushState);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      flushState();
+      window.removeEventListener("pagehide", flushState);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
   const [newDay, setNewDay] = useState("Sexta");
   const [newTime, setNewTime] = useState("20:30");
   const [newMarket, setNewMarket] = useState("Resultado do jogo");
